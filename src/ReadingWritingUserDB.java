@@ -12,14 +12,22 @@ public class ReadingWritingUserDB {
 
     public static void setDbDirectory(String dbDirectory) {
         if (dbDirectory.length() == 0) {
-            System.out.println("path name can't be empty!");
+            System.err.println("Path name can't be empty!");
             return;
         }
         ReadingWritingUserDB.dbDirectory = dbDirectory;
     }
 
+    public static String getFilePathName(User user) {
+        return getDbDirectory() + UserID.generateUserUniqueID(user.getFullName()) + ".db";
+    }
+
+    public static String getFilePathName(String name) {
+        return getDbDirectory() + UserID.generateUserUniqueID(name) + ".db";
+    }
+
     public static void storeUser(User newUser) {
-        File userFile = new File(getDbDirectory() + newUser.getUserId() + ".db");
+        File userFile = new File(getFilePathName(newUser));
 
         if (!userFile.exists())
             try {
@@ -38,10 +46,10 @@ public class ReadingWritingUserDB {
     }
 
     public static User loadUser(String user) {
-        File inFile = new File(getDbDirectory() + UserID.generateUserUniqueID(user) + ".db");
+        File inFile = new File(getFilePathName(user));
 
         if (!inFile.exists()) {
-            System.out.println("User is not in db!");
+            System.err.println("User is not in database!");
             return null;
         }
 
@@ -50,11 +58,22 @@ public class ReadingWritingUserDB {
             return (User) inObjectFile.readObject();
 
         } catch (ClassNotFoundException ex) {
-            System.out.println(ex);
+            System.err.println(ex);
         } catch (IOException ex) {
-            System.out.println(ex);
+            System.err.println(ex);
         }
 
         return null;
+    }
+
+    public static boolean deleteUser(User user) {
+        File userFile = new File(getFilePathName(user));
+
+        if (userFile.exists()) {
+            userFile.delete();
+            return true;
+        }
+        else
+            return false;
     }
 }

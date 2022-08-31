@@ -28,7 +28,7 @@ public class User implements Serializable {
         }
 
         if (balance < 0) {
-            System.out.println("Error, balance can't be negative number");
+            System.out.println("Error, balance can't be negative number (debit card)");
             return;
         }
 
@@ -63,7 +63,7 @@ public class User implements Serializable {
 
     public void deposit(Double amount) {
         if (amount <= 0) {
-            System.err.println("Amount of money need to be greater than zero!");
+            System.err.println("An Amount of money need to be greater than zero!");
             return;
         }
 
