@@ -1,13 +1,19 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ReadingWritingUserDB {
 
-    private static String dbDirectory = "./db/";
+    private static String dbDirectory = "db/";
 
     public static String getDbDirectory() {
         return dbDirectory;
+    }
+
+    public static String getDbDirectoryName () {
+        return getDbDirectory().split("/")[0];
     }
 
     public static void setDbDirectory(String dbDirectory) {
@@ -75,5 +81,24 @@ public class ReadingWritingUserDB {
         }
         else
             return false;
+    }
+
+    public static Map<String, User> getAllUsers () {
+        Map<String, User> users= new LinkedHashMap<>();
+        File dir = new File(getDbDirectoryName());
+
+        for (File file: dir.listFiles()){
+            try (ObjectInputStream oin = new ObjectInputStream(new FileInputStream(file))) {
+                User user = (User) oin.readObject();
+                users.put(user.getFullName(), user);
+
+            } catch (EOFException ex){
+                System.out.println("All users!");
+            } catch (IOException | ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+        }
+
+        return users;
     }
 }
